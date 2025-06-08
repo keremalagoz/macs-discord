@@ -1,10 +1,10 @@
 // index.js
 const fs = require('node:fs');
 const path = require('node:path');
+// SADECE BİR TANE discord.js require'ı olmalı ve tümünü içermeli
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 require('dotenv').config(); // .env dosyasındaki değişkenleri yükler
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const token = process.env.TOKEN; // Değişkeni process.env'den alır
+const token = process.env.TOKEN;
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]
