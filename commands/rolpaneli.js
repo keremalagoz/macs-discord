@@ -1,17 +1,31 @@
 // commands/rolpaneli.js
+
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionsBitField } = require('discord.js');
+
+// YENİ: Yönetim ekibi rollerinin tam isimleri, duyuru komutuyla aynı
+const YONETIM_ROL_ISIMLERI = [
+    'Yönetim Ekibi'
+];
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rol-paneli-gonder')
         .setDescription('Uzmanlık alanı rolleri için buton panelini gönderir.')
-        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator) // Sadece adminler kullanabilir
+        // KALDIRILDI: .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
+        // Artık izin kontrolünü kod içinde yapacağız.
         .addChannelOption(option =>
             option.setName('kanal')
                 .setDescription('Panelin gönderileceği kanal.')
                 .setRequired(true)),
 
     async execute(interaction) {
+        // YENİ: Komutu kullanan kişinin yönetim rollerinden birine sahip olup olmadığını kontrol et
+        const hasPermission = interaction.member.roles.cache.some(role => YONETIM_ROL_ISIMLERI.includes(role.name));
+        // Yönetim rolü yoksa ve aynı zamanda sunucu Yöneticisi de değilse, komutu engelle
+        if (!hasPermission && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+            return interaction.reply({ content: '❌ Bu komutu kullanmak için yetkiniz bulunmuyor.', ephemeral: true });
+        }
+
         const channel = interaction.options.getChannel('kanal');
 
         const embed = new EmbedBuilder()
